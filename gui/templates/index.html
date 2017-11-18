@@ -22,20 +22,95 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
 
     <!-- Custom styles for this template -->
-    <link href="css/agency.css" rel="stylesheet">
+    <style>
+		h1 {
+			font-family: "Roboto Slab";
+			font-size: 56px;
+			font-weight: 100;
+			margin-top: 40px;
+			margin-bottom: 40px;
+		}
+		h2 {
+			font-family: "Roboto Slab";
+			font-size: 32px;
+			color: #1DA1F2;
+		}
+		input, button{
+			font-family: "Montserrat";
+			font-size: 26px;
+			font-weight: 400;
+			padding: 10px;
+		}
+	</style>
 
   </head>
   <body>
     
-    <h2 class="col-md-10 col-md-offset-1 text-center"> Check personality </h2>
+    <h1 class="col-md-10 col-md-offset-1 text-center" style=""> Check personality </h1>
     
     <div class="col-md-4 col-md-offset-4">
-        <form class="form form-inline" method="GET">
-            <input type="text" name="username" placeholder="Twitter username" class="col-md-8 form-control" required />
-                        
-            <button type="submit" class="col-md-4 btn btn-default">Submit</button>
-        </form>
-        
-        
+        <form class="form" method="GET">
+			<div class="form-group">
+				<input type="text" name="username" placeholder="Twitter username" class="col-md-8 form-control" required />
+            </div>            
+            <button type="submit" class="col-md-2 btn btn-success" style="margin-top: 15px;">Check</button>
+        </form>      
     </div>
+    <div class="row"></div>
+    {% if user %}
+		<h2 class="col-md-12 text-center">@{{ user }}</h2>
+		<div class="col-md-12 text-center">
+			<img src="{{ profileImage }}" height="96" width="96" />
+		</div>
+		<div class="chart-container" style="margin-left: auto; margin-right: auto; margin-top: 100px; padding-top: 100px; height:15vh; width:25vw">
+			<canvas id="myChart" width="400" height="400"></canvas>
+		</div>
+    {% endif %}
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script>
+        var ctx = document.getElementById("myChart");
+        
+        var data = {
+            datasets: [{
+                label: 'Personality traits',      
+                data: [{{ finalOutput.extraversion }}, {{ finalOutput.neuroticism }}, {{ finalOutput.agreeableness }}, {{ finalOutput.conscientiousness }}, {{ finalOutput.openness }}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1                
+            }],
+
+            // These labels appear in the legend and in the tooltips when hovering different arcs
+            labels: [
+                'Extraversion','Neuroticism', 'Agreeableness','Conscientiousness','Openness'
+            ],
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        };
+        
+        var myChart = new Chart(ctx, {
+            data: data,
+            type: 'polarArea',
+            //options: options
+        });
+    </script>
   </body>
